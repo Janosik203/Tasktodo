@@ -1,0 +1,9 @@
+<div class="mother">
+    <div class="left-add">
+        <app-tag-list [taglista]="todoService.tagList" [zadlista]="todoService.zadList" (addNewTag)="todoService.addTag($event)" (deleteNewTag)="todoService.deleteTag($event)" (addNewZad)="todoService.addNewZad($event)" (doneZad)="todoService.doneZad($event)" (description)="todoService.addDescription($event)"></app-tag-list>
+    </div>
+    <div class="right-onfocus">
+        <app-active-to-do></app-active-to-do>
+    </div>
+    
+</div>

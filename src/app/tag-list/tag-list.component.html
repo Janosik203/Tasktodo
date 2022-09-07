@@ -1,0 +1,27 @@
+<div class="list-tag">
+    <div class="add-tag">
+        <button class="function-block-done" (click)="(addTag) ? addTag=false : addTag=true">+</button>
+    </div>
+    <div *ngIf="addTag">
+        <div class="add-tag">
+            <input class="add-tag-size" [(ngModel)]="wpisywanyTag">
+            <button class="add-tag-size function-block-done" (click)="sendTag()">Add</button>
+        </div>
+    </div>
+    
+    <!-- wypisywanie tablicy -->
+    <div [id]="tag.id" class="mainTag" *ngFor="let tag of taglista" (click)="activeToDoService.activeFocus(tag.name)">
+        <div class="block">
+            <div class="delete-tag">
+                <button class="function-block-delete">&#10006;</button>
+            </div>
+            <div class="mainTag-block">
+                <h2 class="name-block">{{tag.name}}</h2>
+            </div>
+        </div>
+        <div class="licznik">liczba zadań : {{todoService.liczbazad}}</div>
+    </div>
+  
+    <!-- on focus -->
+  
+</div>
