@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,NgModule } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 
 
 @Component({
@@ -7,11 +7,13 @@ import { Component, OnInit, Input,NgModule } from '@angular/core';
   styleUrls: ['./progress-bar.component.css']
 })
 export class ProgressBarComponent implements OnInit {
- 
-  constructor() { }
+
+  @Input() widtheo: number = 0;
+
+  constructor() {
+  }
 
   ngOnInit(): void {
-    
+
   }
-  @Input() widtheo: number = 0;
 }

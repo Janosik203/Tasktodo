@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
-import { TagList } from './tag-list';
-import { zadList } from './output-interface';
+import {Injectable} from '@angular/core';
+import {Tag} from './models/tag';
+import {Todo} from './models/todo';
+import {TodoApiService} from "./todo-api.service";
 
 
 @Injectable({
@@ -8,83 +9,111 @@ import { zadList } from './output-interface';
 })
 export class TodoService {
 
-  tagList: TagList[] = [];
-  zadList: zadList[] = [];
-  id: number = 0;
-  idZad: number = 0;
-  liczbazad: number = 0;
-  constructor() { }
+  tags: Tag[] = [];
+  todos: Todo[] = [];
+  nextTagId: number = 0;
+  nextTodoId: number = 0;
+
+  constructor(private todoApiService: TodoApiService) {
+
+  }
 
   init() {
-    
-    const SprawdzenieIstnieniaTagStorage = localStorage.getItem("tagStorage");
-    if (SprawdzenieIstnieniaTagStorage) {
-      this.tagList = JSON.parse(SprawdzenieIstnieniaTagStorage);
-      this.id = 1 + this.tagList.reduce((accumulator, currentValue) => currentValue.id > accumulator ? currentValue.id : accumulator, 0);
+    const tagsJson = localStorage.getItem("tags");
+    if (tagsJson) {
+      this.tags = JSON.parse(tagsJson);
+      this.nextTagId = 1 + this.tags.reduce((accumulator, currentValue) => currentValue.id > accumulator ? currentValue.id : accumulator, 0);
     }
-    const SprawdzenieIstnieniaZadStorage = localStorage.getItem("zadStorage");
-    if (SprawdzenieIstnieniaZadStorage) {
-      this.zadList = JSON.parse(SprawdzenieIstnieniaZadStorage);
-      this.idZad = 1 + this.zadList.reduce((accumulator, currentValue) => currentValue.idZad && currentValue.idZad > accumulator ? currentValue.idZad : accumulator, 0);
+    this.todoApiService.getAll()
+      .subscribe(todoList => {
+        this.todos = todoList
+      })
+    // const todosJson = localStorage.getItem("todos");
+    // if (todosJson) {
+    //   this.todos = JSON.parse(todosJson);
+    //   this.nextTodoId = 1 + this.todos.reduce((accumulator, currentValue) => currentValue.id && currentValue.id > accumulator ? currentValue.id : accumulator, 0);
+    // }
+  }
+
+  changeTodo(id: number | null | undefined, name: string, description: string) {
+    if (name === "") {
+      throw new Error("Nazwa zadania jest pusta")
     }
-  }
-  modZad(arg: zadList) {
-    const modZadname = this.zadList.findIndex(x => x.idZad == arg.idZad);
-    this.zadList[modZadname].zadName = arg.zadName
-    this.zadList[modZadname].description = arg.description
-
-    localStorage.setItem('zadStorage', JSON.stringify(this.zadList));
-  }
-  modTagName(arg: TagList) {
-    const idTag = this.tagList.findIndex(x => x.id == arg.id);
-    const tagname = this.tagList[idTag].name
-
-    const filterZadArry = this.zadList.filter(x => x.tagName == tagname)
-    this.tagList[idTag].name = arg.name
-    for (var index in filterZadArry) {
-      this.zadList[index].tagName = arg.name;
-
+    const todo = this.todos.find(todo => todo.id === id)
+    if (!todo) {
+      throw new Error(`Todo ${id} nie istnieje`)
     }
-    localStorage.setItem('zadStorage', JSON.stringify(this.zadList));
-    localStorage.setItem('tagStorage', JSON.stringify(this.tagList));
-
-  }
-  addTag(tag: string) {
-    this.tagList.push({ id: this.id, name: tag })
-    this.id++;
-    localStorage.setItem('tagStorage', JSON.stringify(this.tagList));
-  }
-
-  deleteTag(tag: string) {
-    this.tagList.findIndex(x => x.name == tag);
-    this.tagList.splice(this.tagList.findIndex(x => x.name == tag), 1)
-    localStorage.setItem('tagStorage', JSON.stringify(this.tagList));
+    todo.name = name
+    todo.description = description
+    //todoApiService.update({...todo, name, description})
+    //   .subscribe(updatedTodo => {
+        // find index by id
+        // replace
+      // })
+    this.saveTodos();
   }
 
-  addNewZad(arg: zadList) {
-    this.zadList.push({ idZad: this.idZad, tagName: arg.tagName, zadName: arg.zadName, description: arg.description, done: false, aktywacja: false })
-    const a = this.tagList.findIndex(x => x.name == arg.tagName)
-    // this.tagList[a].liczbazad = (this.tagList[a].liczbazad ?? 0) + 1
-    this.liczbzadania(arg)
-    this.idZad++;
-    localStorage.setItem('zadStorage', JSON.stringify(this.zadList));
+  changeTagName(newTag: Tag) {
+    const tag = this.tags.find(tag => tag.id === newTag.id)
+    if (!tag) {
+      throw new Error(`Tag ${newTag.id} nie istnieje`)
+    }
+
+    const todosOfCurrentTag = this.todos.filter(x => x.tagName == tag.name)
+    tag.name = newTag.name
+    for (let todo of todosOfCurrentTag) {
+      todo.tagName = newTag.name;
+    }
+    this.saveTodos();
+    this.saveTags();
   }
 
-  doneZad(arg: zadList) {
-    const index = this.zadList.findIndex(x => x.zadName == arg.zadName);
-    this.zadList[index].done = true;
-    this.liczbzadania(arg)
-    // this.tagList[this.tagList.findIndex(x => x.name == arg.tagName)].liczbazad = - 1;
-    localStorage.setItem('zadStorage', JSON.stringify(this.zadList));
+  addTag(name: string) {
+    if (this.tags.some(tag => tag.name === name)) {
+      throw new Error("Tag exists")
+    }
+    this.tags.push({id: this.nextTagId, name})
+    this.nextTagId++;
+    this.saveTags();
   }
 
-  addDescription(arg: zadList) {
-    const index = this.zadList.findIndex(x => x.idZad == arg.idZad);
-    this.zadList[index].description = arg.description;
-    localStorage.setItem('zadStorage', JSON.stringify(this.zadList));
+  // deleteTag(name: string) {
+  //   const index = this.tags.findIndex(x => x.name === name);
+  //   this.tags.splice(index, 1)
+  //   this.saveTags();
+  // }
 
+  addTodo(tagName: string, name: string) {
+    this.todoApiService.create({
+      //id: this.nextTodoId, // DO usuniecia
+      tagName: tagName,
+      name: name,
+      description: "",
+      isDone: false,
+      //isEditing: false
+    }).subscribe(receivedTodo => {
+        console.log('from api', receivedTodo)
+        this.todos.push(receivedTodo)
+        this.nextTodoId++;
+        this.saveTodos();
+      })
   }
-  liczbzadania(zad : zadList){
-    this.liczbazad = this.zadList.filter(x=>x.tagName === zad.tagName).filter(x=>x.done === false).length
+
+  finishTodo(todo: Todo) {
+    todo.isDone = true;
+    this.saveTodos();
   }
+
+  countActiveTodosByTagName(tagName?: string) {
+    return this.todos.filter(x => x.tagName === tagName && !x.isDone).length
+  }
+
+  private saveTodos() {
+    localStorage.setItem('todos', JSON.stringify(this.todos));
+  }
+
+  private saveTags() {
+    localStorage.setItem('tags', JSON.stringify(this.tags));
+  }
+
 }

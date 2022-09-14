@@ -1,77 +1,86 @@
-.mother{
-    height: 100%;
-    display: flex;
-    justify-content: right;
-    flex-direction:column;
-    align-items: center;
-    padding-top: 30px;
+.mother2 {
+  height: 100%;
+  display: flex;
+  justify-content: right;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
 }
-.zadanie{
-    display: flex;
-    flex-direction: column;
-    width: 550px;
-    border: 2px solid #1f2937;
-    border-radius: 5px;
-    margin: 10px;
-    padding: 15px;
+
+.zadanie {
+  display: flex;
+  flex-direction: column;
+  width: 550px;
+  border: 2px solid #1f2937;
+  border-radius: 5px;
+  margin: 10px;
+  padding: 15px;
 }
-.postionCenter{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+
+.postionCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
+
 /* .line{
     width: 75%;
     height: 1px;
     box-shadow: 1px 3px 10px rgba(70, 65, 65, 0.753);
     margin: 5px;
 } */
-.poleOpisu{
-    display: block;
-    width: 80%;
-    margin: 0 auto;
-    margin-bottom: 5px;
-    margin-top: 5px;
-    height: 75px;
-    padding: 12px 20px;
-    box-sizing: border-box;
-    border: 2px solid #ccc;
-    border-radius: 4px;
-    background-color: #f8f8f8;
-    overflow-y: visible;
-    
+.poleOpisu {
+  display: block;
+  width: 80%;
+  margin: 0 auto;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  height: 75px;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  overflow-y: visible;
+
 }
-.function-block-done{
-    transition-duration: 0.5s;
-    background-color: #1f2937;
-    color: #f3f4f6;
-    border: 2px solid #f3f4f6;
-    height: 30px;
-    width: 30px; 
-    margin: 5px; 
+
+.function-block-done {
+  transition-duration: 0.5s;
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border: 2px solid #f3f4f6;
+  height: 30px;
+  width: 30px;
+  margin: 5px;
 }
-.function-block-done:hover{
-    background-color: rgb(33, 179, 57);
-     color: white;
+
+.function-block-done:hover {
+  background-color: rgb(33, 179, 57);
+  color: white;
 }
-.done{
-    display: flex;
-    justify-content: flex-end;
+
+.done {
+  display: flex;
+  justify-content: flex-end;
 }
-.add-input{
-    border: 1 solid #1f2937;
-    color: #1f2937;
-    height: 20px;
+
+.add-input {
+  border: 1 solid #1f2937;
+  color: #1f2937;
+  height: 20px;
 }
-.add-button{
-    transition-duration: 0.5s;
-    background-color: #1f2937;
-    color: #f3f4f6;
-    border: 2px solid #f3f4f6;
-    height: 30px;
-    width: 50px; 
+
+.add-button {
+  transition-duration: 0.5s;
+  background-color: #1f2937;
+  color: #f3f4f6;
+  border: 2px solid #f3f4f6;
+  height: 30px;
+  width: 50px;
 }
+
 /* .active-tag{
 
 

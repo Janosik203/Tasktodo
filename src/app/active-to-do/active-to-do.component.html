@@ -1,64 +1,77 @@
-<div class="mother" *ngIf="activeToDoService.activeElement.name != null">
-    <div *ngIf="activeToDoService.aktywowany;then thenBlock else elseblock" ></div>
-    <ng-template #thenBlock>
-        <div class="active-tag" (click)="activeToDoService.aktywacja()">
+<div *ngIf="selectedTag != null">
+  <div *ngIf="selectedTag.name != null" class="mother2">
+    <div *ngIf="activeToDoService.isEditing;then active else inactive"></div>
+    <ng-template #inactive>
+      <div (click)="activeToDoService.toggleActive()" class="active-tag">
         <h2>
-            {{activeToDoService.activeElement.name}}
-        </h2>    
-        </div>
-       
+          {{selectedTag.name}}
+        </h2>
+      </div>
+
     </ng-template>
-    <ng-template  #elseblock>
-        <div class="active-tag">
-            <h2>
-                {{activeToDoService.activeElement.name}}
-                =>
-            </h2>   
-           
-            <input [(ngModel)]="activeToDoService.newTag">
-            <input value="zmień tag" type="button" (click)="todoService.modTagName({id: activeToDoService.activeElement.id, name: activeToDoService.newTag}); activeToDoService.aktywacja();">
-        </div>
+    <ng-template #active>
+      <div class="active-tag">
+        <h2>
+          {{selectedTag.name}}
+        </h2>
+
+        <input [(ngModel)]="activeToDoService.newTagName">
+        <input
+          (click)="todoService.changeTagName({id: selectedTag.id, name: activeToDoService.newTagName}); activeToDoService.toggleActive();"
+          type="button"
+          value="zmień tag">
+      </div>
     </ng-template>
-    <div *ngFor="let zad of todoService.zadList">
-        <div  *ngIf="zad.tagName === activeToDoService.activeElement.name && zad.done == false">
-            <div *ngIf="zad.aktywacja; then opiszmiana else opisstaly"></div>
-            <ng-template #opisstaly>
-                <div  class="zadanie" (click)="activeToDoService.aktywacjaopis(zad)">
-                    <div class="done">
-                        <button class="function-block-done" (click)="todoService.doneZad({zadName: zad.zadName,tagName: zad.tagName ,done: true})">&#10004;</button>
-                    </div>
-                    <div class="postionCenter">
-                        <h3>
-                            {{zad.zadName}}
-                        </h3>
-                    </div>
-                    <div class="postionCenter">
-                        <textarea class="poleOpisu" value="{{zad.description}}"></textarea>
-                    </div>
-                        
-                </div>               
-            </ng-template>
-            <ng-template #opiszmiana>
-                <div  class="zadanie">
-                    <div class="done">
-                        <button class="function-block-done" (click)="todoService.doneZad({zadName: zad.zadName,tagName: zad.tagName ,done: true})">&#10004;</button>
-                    </div>
-                    <div>
-                        <input [(ngModel)]="zad.zadName">
-                    </div>
-                    <div>
-                        <textarea class="poleOpisu" [(ngModel)]="activeToDoService.newDescription"></textarea>
-                    </div>
-                    <input type="button" value="Accept"  class="postionCenter" (click)="todoService.modZad({zadName: zad.zadName, description: activeToDoService.newDescription, tagName:zad.tagName, idZad: zad.idZad,done: false}); activeToDoService.aktywacjaopis(zad)">
-                </div>
-            </ng-template>
-        </div>
+    <div *ngFor="let todo of todoService.todos">
+      <div *ngIf="todo.tagName === selectedTag.name && todo.isDone == false">
+        <div *ngIf="todo.isEditing; then editingTodo else readOnlyTodo"></div>
+        <ng-template #readOnlyTodo>
+          <div (click)="onStartEditing(todo)" class="zadanie">
+            <div class="done">
+              <button (click)="todoService.finishTodo(todo)" class="function-block-done">
+                &#10004;
+              </button>
+            </div>
+            <div class="postionCenter">
+              <h3>
+                {{todo.name}}
+              </h3>
+            </div>
+            <div class="postionCenter">
+              <textarea class="poleOpisu" value="{{todo.description}}"></textarea>
+            </div>
+
+          </div>
+        </ng-template>
+        <ng-template #editingTodo>
+          <div class="zadanie">
+            <div class="done">
+              <button (click)="todoService.finishTodo(todo)"
+                      class="function-block-done">&#10004;
+              </button>
+            </div>
+            <div>
+              <input [(ngModel)]="editingName">
+            </div>
+            <div>
+              <textarea [(ngModel)]="editingDescription" class="poleOpisu"></textarea>
+            </div>
+            <input (click)="onAccept(todo)" class="postionCenter" type="button"
+                   value="Accept">
+          </div>
+        </ng-template>
+      </div>
     </div>
     <div class="add-zad">
-     
-        <div>
-            <input  class="add-input" [(ngModel)]="newZad">
-            <button class="add-button" type="button" (click)="todoService.addNewZad({tagName: activeToDoService.activeElement.name, zadName: newZad, done:false})">Add</button>
-        </div>
+
+      <div>
+        <input [(ngModel)]="newTodoName" placeholder="Dodaj nowe zadanie" class="add-input">
+        <button (click)="todoService.addTodo(selectedTag.name, newTodoName); newTodoName = ''"
+                class="add-button"
+                type="button">
+          Add
+        </button>
+      </div>
     </div>
+  </div>
 </div>

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { ActiveToDoComponent } from './active-to-do.component';
+import {ActiveToDoComponent} from './active-to-do.component';
 
 describe('ActiveToDoComponent', () => {
   let component: ActiveToDoComponent;
@@ -8,9 +8,9 @@ describe('ActiveToDoComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ActiveToDoComponent ]
+      declarations: [ActiveToDoComponent]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {
