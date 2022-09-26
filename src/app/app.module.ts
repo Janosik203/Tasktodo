@@ -9,7 +9,7 @@ import {ActiveToDoComponent} from './active-to-do/active-to-do.component';
 import {TodoService} from './todo.service';
 import {ActiveToDoService} from './active-to-do.service';
 import {HttpClientModule} from "@angular/common/http";
-
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [
@@ -25,6 +25,7 @@ import {HttpClientModule} from "@angular/common/http";
     BrowserModule,
     FormsModule,
     HttpClientModule,
+    FontAwesomeModule,
 
   ],
   providers: [TodoService, ActiveToDoService],

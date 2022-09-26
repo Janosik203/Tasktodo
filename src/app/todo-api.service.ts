@@ -1,22 +1,43 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {CrudApiService} from "./crud-api.service";
 import {CreateTodoDto, Todo} from "./models/todo";
+import {FirebaseProviderService} from "./firebase-provider.service";
+import * as firestore from "firebase/firestore"
+import {Firestore} from "firebase/firestore"
 
 @Injectable({
   providedIn: 'root'
 })
 export class TodoApiService {
-  private readonly resourceName = 'todos'
-  constructor(private crudApiService: CrudApiService) { }
+  private readonly collectionName = 'todos'
+  private readonly db: Firestore;
 
 
-  create(todo: CreateTodoDto) {
-    return this.crudApiService.create<Todo>(this.resourceName, todo)
+  constructor(private crudApiService: CrudApiService, private firebase: FirebaseProviderService) {
+    this.db = firebase.getDb()
   }
 
-  getAll() {
-    return this.crudApiService.getAll<Todo>(this.resourceName)
+  async create(todo: CreateTodoDto) {
+    return firestore.addDoc(this.getCollection(), todo)
+  }
+
+  async getAll() {
+    const results = await firestore.getDocs(firestore.query(this.getCollection()))
+    return results.docs.map(document => {
+      const todo = document.data() as Todo
+      todo._id = document.id
+      return todo
+    })
   }
 
 
+
+  private getCollection() {
+    return firestore.collection(this.db, this.collectionName)
+  }
+
+  async update(todo: Todo) {
+    const todoRef = firestore.doc(this.db, this.collectionName, todo._id)
+    return firestore.updateDoc(todoRef, todo)
+  }
 }

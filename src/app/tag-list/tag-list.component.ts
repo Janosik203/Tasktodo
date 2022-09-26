@@ -9,19 +9,14 @@ import {TodoService} from '../todo.service';
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.css']
 })
-export class TagListComponent implements OnInit {
+export class TagListComponent {
   @Input() tags: Tag[] = [];
   @Output() onTagAdded = new EventEmitter<string>()
   @Output() onTagSelected = new EventEmitter<Tag>()
 
   isAdding: boolean = false
   editingTagName: string = ""
-  constructor(public activeToDoService: ActiveToDoService, public todoService: TodoService) {
-  }
-
-  ngOnInit(): void {
-    this.activeToDoService.init()
-    this.todoService.init()
+  constructor(public todoService: TodoService) {
   }
 
   addTag() {

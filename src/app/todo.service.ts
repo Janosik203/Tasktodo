@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Tag} from './models/tag';
 import {Todo} from './models/todo';
 import {TodoApiService} from "./todo-api.service";
+import {uniq} from "lodash"
 
 
 @Injectable({
@@ -18,16 +19,14 @@ export class TodoService {
 
   }
 
-  init() {
-    const tagsJson = localStorage.getItem("tags");
-    if (tagsJson) {
-      this.tags = JSON.parse(tagsJson);
-      this.nextTagId = 1 + this.tags.reduce((accumulator, currentValue) => currentValue.id > accumulator ? currentValue.id : accumulator, 0);
-    }
-    this.todoApiService.getAll()
-      .subscribe(todoList => {
-        this.todos = todoList
-      })
+  async init() {
+    // const tagsJson = localStorage.getItem("tags");
+    // if (tagsJson) {
+    //   this.tags = JSON.parse(tagsJson);
+    //   this.nextTagId = 1 + this.tags.reduce((accumulator, currentValue) => currentValue.id > accumulator ? currentValue.id : accumulator, 0);
+    // }
+    this.todos = await this.todoApiService.getAll()
+    this.tags = uniq(this.todos.map(todo => todo.tagName)).map(tagName => ({name: tagName, id: 0} as Tag))
     // const todosJson = localStorage.getItem("todos");
     // if (todosJson) {
     //   this.todos = JSON.parse(todosJson);
@@ -83,25 +82,24 @@ export class TodoService {
   //   this.saveTags();
   // }
 
-  addTodo(tagName: string, name: string) {
-    this.todoApiService.create({
+  async addTodo(tagName: string, name: string) {
+    await this.todoApiService.create({
       //id: this.nextTodoId, // DO usuniecia
       tagName: tagName,
       name: name,
       description: "",
       isDone: false,
       //isEditing: false
-    }).subscribe(receivedTodo => {
-        console.log('from api', receivedTodo)
-        this.todos.push(receivedTodo)
-        this.nextTodoId++;
-        this.saveTodos();
-      })
+    })
+
+    this.todos = await this.todoApiService.getAll()
   }
 
-  finishTodo(todo: Todo) {
+  async finishTodo(todo: Todo) {
     todo.isDone = true;
-    this.saveTodos();
+    await this.todoApiService.update(todo)
+    this.todos = await this.todoApiService.getAll()
+
   }
 
   countActiveTodosByTagName(tagName?: string) {

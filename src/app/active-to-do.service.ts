@@ -1,7 +1,5 @@
-import {Injectable} from '@angular/core';
-import {TodoService} from './todo.service';
+import {Injectable} from '@angular/core'
 import {Todo} from './models/todo'
-import {Tag} from './models/tag';
 
 
 @Injectable({
@@ -10,14 +8,6 @@ import {Tag} from './models/tag';
 export class ActiveToDoService {
   newTagName: string = ""
   isEditing: boolean = false
-
-  constructor(public todoService: TodoService) {
-    this.todoService.init()
-  }
-
-  init() {
-
-  }
 
   toggleActive() {
     this.isEditing = !this.isEditing

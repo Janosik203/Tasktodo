@@ -1,6 +1,7 @@
 export type Todo = {
-  // _id: string // Do stworzenia
+  _id: string // Do stworzenia
   id?: number // DO usuniecia
+
   tagName?: string
   name: string
   description?: string

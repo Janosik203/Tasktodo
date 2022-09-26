@@ -5,12 +5,13 @@ import {TodoService} from '../todo.service';
 import {Todo} from "../models/todo";
 import {Tag} from "../models/tag";
 
+
 @Component({
   selector: 'app-active-to-do',
   templateUrl: './active-to-do.component.html',
   styleUrls: ['./active-to-do.component.css']
 })
-export class ActiveToDoComponent implements OnInit {
+export class ActiveToDoComponent {
   @Input() selectedTag: Tag | null = null
   newTodoName: string = ""
   editingDescription: string = ""
@@ -18,12 +19,6 @@ export class ActiveToDoComponent implements OnInit {
 
   constructor(public activeToDoService: ActiveToDoService, public todoService: TodoService) {
   }
-
-  ngOnInit(): void {
-    this.activeToDoService.init()
-    this.todoService.init()
-  }
-
 
 
   onAccept(todo: Todo) {

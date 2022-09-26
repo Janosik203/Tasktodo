@@ -14,9 +14,8 @@ export class MainComponent implements OnInit {
   constructor(public todoService: TodoService, public activeToDoService: ActiveToDoService) {
   }
 
-  ngOnInit(): void {
-    this.todoService.init()
-    this.activeToDoService.init()
+  async ngOnInit() {
+    await this.todoService.init()
     this.selectedTag = this.todoService.tags.length > 0 ? this.todoService.tags[0] : null
   }
 
