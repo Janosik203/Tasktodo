@@ -225,7 +225,7 @@ h2:first-letter {
   border: 2px solid #1d4ed8;
   color: #1e3a8a;
   height: 34px;
-
+  cursor: pointer;
 }
 
 .taskEdit-editTag {

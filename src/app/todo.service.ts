@@ -25,11 +25,6 @@ export class TodoService {
   }
 
   async init() {
-    // const tagsJson = localStorage.getItem("tags");
-    // if (tagsJson) {
-    //   this.tags = JSON.parse(tagsJson);
-    //   this.nextTagId = 1 + this.tags.reduce((accumulator, currentValue) => currentValue.id > accumulator ? currentValue.id : accumulator, 0);
-    // }
     this.todos = await this.todoApiService.getAll()
     this.tags = uniq(this.todos.map(todo => todo.tagName)).map(tagName => ({name: tagName, id: 0} as Tag))
   }
@@ -45,11 +40,6 @@ export class TodoService {
     todo.name = name
     todo.description = description
     await this.todoApiService.update({...todo, name, description})
-    // .subscribe(this.todoApiService.update => {
-    //   find index by id
-    //   replace
-    // })
-
     this.todos = await this.todoApiService.getAll()
   }
 
@@ -85,27 +75,19 @@ export class TodoService {
       alert("Tag can't be empty")
     }
 
-    // this.saveTags();
+
   }
 
-  // deleteTag(name: string) {
-  //   const index = this.tags.findIndex(x => x.name === name);
-  //   this.tags.splice(index, 1)
-  //   this.saveTags();
-  // }
 
   async addTodo(tagName: string, name: string) {
-    // Próba 1
     if(name != ""){
       this.loadingicon = true;
 
       await this.todoApiService.create({
-        //id: this.nextTodoId, // DO usuniecia
         tagName: tagName,
         name: name,
         description: "Description",
         isDone: false,
-        //isEditing: false
       })
 
       this.todos = await this.todoApiService.getAll()
@@ -126,15 +108,6 @@ export class TodoService {
   countActiveTodosByTagName(tagName?: string) {
     return this.todos.filter(x => x.tagName === tagName && !x.isDone).length
   }
-
-  // private saveTodos() {
-  //   localStorage.setItem('todos', JSON.stringify(this.todos));
-  // }
-  //
-  // private saveTags() {
-  //   localStorage.setItem('tags', JSON.stringify(this.tags));
-  // }
-
   async delete(tag: string) {
     try {
       await this.modalService.ask()
