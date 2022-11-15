@@ -1,6 +1,7 @@
 <div class="mother">
   <div class="left-add">
-    <app-tag-list (onTagSelected)="onTagSelected($event)" (onTagAdded)="todoService.addTag($event)" [tags]="todoService.tags"></app-tag-list>
+    <app-tag-list (onTagAdded)="todoService.addTag($event)" (onTagSelected)="onTagSelected($event)"
+                  [tags]="todoService.tags"></app-tag-list>
   </div>
   <div class="right-onfocus">
     <app-active-to-do [selectedTag]="selectedTag"></app-active-to-do>

@@ -5,13 +5,13 @@
 
 .left-add {
   padding: 20px;
-  width: 15%;
-  color: #d1d5db;
-  background-color: #1f2937;
+  width: 25%;
+  color: #111827;
+  background-color: #e0e7ff;
 }
 
 .right-onfocus {
-  width: 85%;
-  background-color: #f3f4f6;
+  width: 75%;
+  background-color: #eff6ff;
   color: #111827;
 }

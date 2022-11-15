@@ -40,4 +40,5 @@ export class TodoApiService {
     const todoRef = firestore.doc(this.db, this.collectionName, todo._id)
     return firestore.updateDoc(todoRef, todo)
   }
+
 }

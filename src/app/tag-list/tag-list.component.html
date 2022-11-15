@@ -1,27 +1,65 @@
-<div class="list-tag">
-  <div class="add-tag">
-    <button (click)="isAdding = !isAdding" class="function-block-done">+</button>
+<div class="container">
+  <div class="addTag">
+    <button (click)="isAdding = !isAdding" class="button">+</button>
   </div>
   <div *ngIf="isAdding">
-    <div class="add-tag">
-      <input [(ngModel)]="editingTagName" class="add-tag-size">
-      <button (click)="addTag()" class="add-tag-size function-block-done">Add</button>
+    <div class="addTag">
+      <input placeholder="Dodaj tag" [(ngModel)]="editingTagName" class="input">
+      <button (click)="addTag()" class="button">Add</button>
     </div>
   </div>
-
-  <!-- wypisywanie tablicy -->
-  <div (click)="onTagSelected.emit(tag)" *ngFor="let tag of tags" [id]="tag.id" class="mainTag">
-    <div class="block">
-      <div class="delete-tag">
-        <button class="function-block-delete">&#10006;</button>
+  <div class="selectFiltr">
+    <select class="selectFiltr-option" [(ngModel)]="option">
+      <option value="Tags">Tags</option>
+      <option value="All">All</option>
+    </select>
+  </div>
+  <div *ngIf="option === 'Tags'; then filtrTags else all "></div>
+  <ng-template #filtrTags>
+    <div (click)="onTagSelected.emit(tag)" *ngFor="let tag of tags" [id]="tag.id" class="tagComponent">
+      <div class="tagComponent-container">
+        <div class="tagComponent-container__connector">
+          <h2 class="tagComponent-container__text">{{tag.name}}</h2>
+          <div class="tagComponent-container__register">{{todoService.countActiveTodosByTagName(tag.name)}}</div>
+        </div>
       </div>
-      <div class="mainTag-block">
-        <h2 class="name-block">{{tag.name}}</h2>
+      <div>
+        <div *ngIf="modalService.isActive; then modalBox "></div>
+        <ng-template #modalBox>
+          <div class="modal">
+            <div class="modal-container">
+              <div>
+                <h2 class="modal-container__title">Czy na pewno chesz usunąć Tag ?</h2>
+              </div>
+              <div class="modal-container__buttons">
+                <div>
+                  <button class="button"
+                          (click)="modalService.resolve && modalService.resolve()">Tak
+                  </button>
+                </div>
+                <div>
+                  <button class="button"
+                          (click)="modalService.reject && modalService.reject()">Nie
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </div>
-    <div class="licznik">liczba zadań : {{todoService.countActiveTodosByTagName(tag.name)}}</div>
+  </ng-template>
+  <ng-template #all>
+    <div class="tagComponent-container">
+      <div class="tagComponent-container__connector">
+        <h2 (click)="onTagSelected.emit(undefined)" class="tagComponent-container__text">all tags</h2>
+      </div>
+    </div>
+  </ng-template>
+  <div class="tagComponent-container">
+    <div class="tagComponent-container__connector"
+         (click)="onTagSelected.emit({id:10000,name:'archives', archival: true})">
+      <h2 class="tagComponent-container__text">Archives</h2>
+    </div>
   </div>
-
-  <!-- on focus -->
-
 </div>

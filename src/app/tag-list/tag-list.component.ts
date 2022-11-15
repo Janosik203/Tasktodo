@@ -1,8 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Tag} from '../models/tag';
+
 import {Todo} from '../models/todo'
 import {ActiveToDoService} from '../active-to-do.service';
 import {TodoService} from '../todo.service';
+import {ModalserviceService} from "../modalservice.service";
 
 @Component({
   selector: 'app-tag-list',
@@ -16,7 +18,8 @@ export class TagListComponent {
 
   isAdding: boolean = false
   editingTagName: string = ""
-  constructor(public todoService: TodoService) {
+  option: string = "Tags"
+  constructor(public todoService: TodoService, public modalService: ModalserviceService) {
   }
 
   addTag() {

@@ -19,7 +19,10 @@ export class MainComponent implements OnInit {
     this.selectedTag = this.todoService.tags.length > 0 ? this.todoService.tags[0] : null
   }
 
-  onTagSelected(tag: Tag) {
+  onTagSelected(tag: Tag | null) {
+    if (tag === null) {
+      this.selectedTag = null
+    }
     this.selectedTag = tag
   }
 }

@@ -1,77 +1,219 @@
-<div *ngIf="selectedTag != null">
-  <div *ngIf="selectedTag.name != null" class="mother2">
-    <div *ngIf="activeToDoService.isEditing;then active else inactive"></div>
-    <ng-template #inactive>
-      <div (click)="activeToDoService.toggleActive()" class="active-tag">
-        <h2>
-          {{selectedTag.name}}
-        </h2>
-      </div>
-
-    </ng-template>
-    <ng-template #active>
-      <div class="active-tag">
-        <h2>
-          {{selectedTag.name}}
-        </h2>
-
-        <input [(ngModel)]="activeToDoService.newTagName">
-        <input
-          (click)="todoService.changeTagName({id: selectedTag.id, name: activeToDoService.newTagName}); activeToDoService.toggleActive();"
-          type="button"
-          value="zmień tag">
-      </div>
-    </ng-template>
-    <div *ngFor="let todo of todoService.todos">
-      <div *ngIf="todo.tagName === selectedTag.name && todo.isDone == false">
-        <div *ngIf="todo.isEditing; then editingTodo else readOnlyTodo"></div>
-        <ng-template #readOnlyTodo>
-          <div (click)="onStartEditing(todo)" class="zadanie">
-            <div class="done">
-              <button (click)="todoService.finishTodo(todo)" class="function-block-done">
-                &#10004;
-              </button>
-            </div>
-            <div class="postionCenter">
+<div *ngIf="selectedTag != null && selectedTag.archival === true;then archivall else basic"></div>
+<ng-template #basic>
+  <div *ngIf="selectedTag != null;then cdc else allTodo"></div>
+</ng-template>
+<ng-template #archivall>
+  <div *ngFor="let todo of todoService.todos">
+    <div *ngIf="todo.isDone;then readOnlyy"></div>
+    <ng-template #readOnlyy>
+      <div class="archive">
+        <div class="archive-container">
+          <div class="archive-container__name">
+            <div>
               <h3>
                 {{todo.name}}
               </h3>
             </div>
-            <div class="postionCenter">
-              <textarea class="poleOpisu" value="{{todo.description}}"></textarea>
-            </div>
-
           </div>
-        </ng-template>
-        <ng-template #editingTodo>
-          <div class="zadanie">
-            <div class="done">
-              <button (click)="todoService.finishTodo(todo)"
-                      class="function-block-done">&#10004;
-              </button>
-            </div>
-            <div>
-              <input [(ngModel)]="editingName">
-            </div>
-            <div>
-              <textarea [(ngModel)]="editingDescription" class="poleOpisu"></textarea>
-            </div>
-            <input (click)="onAccept(todo)" class="postionCenter" type="button"
-                   value="Accept">
+        </div>
+        <div class="archive-description">
+          <div class="archiva-description__content">
+            {{todo.description}}
           </div>
-        </ng-template>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</ng-template>
+<ng-template #cdc>
+  <div *ngIf="selectedTag && selectedTag.name != null" class="mother">
+    <div class="container">
+      <div *ngIf="activeToDoService.isEditing;then active else inactive"></div>
+      <ng-template #inactive>
+        <div class="container-inactive">
+          <h2 class="container-inactive__name">
+            {{selectedTag.name}}
+          </h2>
+          <button class="container-inactive__button">
+            <fa-icon (click)="activeToDoService.toggleActive()" [icon]="faEdit" class="icon"></fa-icon>
+          </button>
+        </div>
+      </ng-template>
+      <ng-template #active>
+        <div class="container-active">
+          <h2>
+            {{selectedTag.name}}
+          </h2>
+          <input [(ngModel)]="activeToDoService.newTagName" class="input" placeholder="{{selectedTag.name}}">
+          <input
+            (click)="todoService.changeTagName({id: selectedTag.id, name: activeToDoService.newTagName}); activeToDoService.toggleActive();"
+            class="button"
+            type="button" value="Zmień tag">
+          <button (click)="todoService.delete(selectedTag.name)" class="deleteButton" style="width: 200px">Usuń</button>
+        </div>
+      </ng-template>
+      <div *ngFor="let todo of todoService.todos">
+        <div *ngIf="selectedTag && todo.tagName === selectedTag.name && todo.isDone == false">
+          <div *ngIf="todo.isEditing; then editingTodo else taskList"></div>
+          <ng-template #taskList>
+            <div class="taskList">
+              <div class="taskList-task">
+                <div class="taskList-task__container">
+                  <div (click)="todoService.finishTodo(todo)" class="buttonCheck">
+                    <div class="buttonCheck__check">&#10003;</div>
+                  </div>
+                  <div class="taskList-task__description">
+                    <h3>
+                      {{todo.name}}
+                    </h3>
+                  </div>
+                </div>
+                <div class="taskList-task__edit">
+                  <button class="container-inactive__button">
+                    <fa-icon (click)="onStartEditing(todo)" [icon]="faEdit" class="icon"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="taskList__description">
+                {{todo.description}}
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #editingTodo>
+            <div class="taskEdit">
+              <div class="taskEdit-editTag">
+                <div (click)="todoService.finishTodo(todo)" class="buttonCheck">
+                  <div class="buttonCheck__check">&#10003;</div>
+                </div>
+                <div>
+                  <select [(ngModel)]="optionTag" class="select">
+                    <option *ngFor="let tag of todoService.tags"> {{tag.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <input [(ngModel)]="editingName" class="taskEdit__name">
+              </div>
+              <div>
+                <textarea [(ngModel)]="editingDescription" class="taskEdit__description"
+                          placeholder="Description"></textarea>
+              </div>
+            </div>
+            <div class="taskEdit-accept">
+              <div class="taskEdit-accept__button">
+                <input (click)="onAccept(todo); todoService.changeTaskTag(todo, optionTag)" class="button" type="button"
+                       value="Accept">
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      <div *ngIf="todoService.loadingicon then loading_icon"></div>
+      <ng-template #loading_icon>
+        <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
+      </ng-template>
+      <div *ngIf="selectedTag" class="addTask">
+        <div>
+          <input [(ngModel)]="newTodoName" class="input" placeholder="Dodaj nowe zadanie">
+          <button (click)="todoService.addTodo(selectedTag.name, newTodoName); newTodoName = ''"
+                  class="button"
+                  type="button">
+            Add
+          </button>
+        </div>
       </div>
     </div>
-    <div class="add-zad">
-
-      <div>
-        <input [(ngModel)]="newTodoName" placeholder="Dodaj nowe zadanie" class="add-input">
-        <button (click)="todoService.addTodo(selectedTag.name, newTodoName); newTodoName = ''"
-                class="add-button"
-                type="button">
-          Add
-        </button>
-      </div>
+    <div>
+      <div></div>
     </div>
   </div>
-</div>
+</ng-template>
+<ng-template #allTodo>
+  <div class="mother">
+    <div class="block">
+      <div *ngFor="let todo of todoService.todos">
+        <div *ngIf="todo.isDone == false">
+          <div *ngIf="todo.isEditing; then editingTodo else readOnlyTodo"></div>
+          <ng-template #readOnlyTodo>
+            <div class="taskList">
+              <div class="taskList-task">
+                <div class="taskList-task__container">
+                  <div (click)="todoService.finishTodo(todo)" class="buttonCheck">
+                    <div class="buttonCheck__check">&#10003;</div>
+                  </div>
+                  <div class="taskList-task__description">
+                    <div>
+                      <h3>
+                        {{todo.name}}
+                      </h3>
+                    </div>
+                    <div class="taskList-task__tag">
+                      <h4 class="taskEdit-task__text">{{todo.tagName}}</h4>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="taskList-task__edit">
+                  <button class="container-inactive__button">
+                    <fa-icon (click)="onStartEditing(todo)" [icon]="faEdit" class="icon"></fa-icon>
+                  </button>
+                </div>
+              </div>
+              <div class="taskList__description">
+                {{todo.description}}
+              </div>
+            </div>
+          </ng-template>
+          <ng-template #editingTodo>
+            <div class="taskEdit">
+              <div class="taskEdit-editTag">
+                <div (click)="todoService.finishTodo(todo)" class="buttonCheck">
+                  <div class="buttonCheck__check">&#10003;</div>
+                </div>
+                <div class="taskEdit-task__text">
+                  {{todo.tagName}}
+                </div>
+                <div>
+                  <select [(ngModel)]="optionTag" class="select">
+                    <option *ngFor="let tag of todoService.tags"> {{tag.name}}</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <input [(ngModel)]="editingName" class="taskEdit__name">
+              </div>
+              <div>
+                <textarea [(ngModel)]="editingDescription" class="taskEdit__description"
+                          placeholder="Description"></textarea>
+              </div>
+            </div>
+            <div class="taskEdit-accept">
+              <div class="taskEdit-accept__button">
+                <input (click)="onAccept(todo); todoService.changeTaskTag(todo, optionTag)" class="button" type="button"
+                       value="Accept">
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+      <div *ngIf="todoService.loadingicon then loading_icon"></div>
+      <ng-template #loading_icon>
+        <fa-icon [icon]="faSpinner" [spin]="true"></fa-icon>
+      </ng-template>
+      <div *ngIf="selectedTag" class="addTask">
+        <div>
+          <input [(ngModel)]="newTodoName" class="input" placeholder="Dodaj nowe zadanie">
+          <button (click)="todoService.addTodo(selectedTag.name, newTodoName); newTodoName = ''"
+                  class="button"
+                  type="button">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div></div>
+    </div>
+  </div>
+</ng-template>
+
