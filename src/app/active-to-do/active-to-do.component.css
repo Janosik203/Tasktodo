@@ -47,18 +47,20 @@
 }
 
 .icon {
-
   font-size: 1.2rem;
   color: #f3f4f6;
   cursor: pointer;
 }
 
 .container-inactive__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 100%;
   border: none;
   background-color: #1d4ed8;
   box-shadow: 0 8px 20px 2px rgb(0 0 0 / 30%);
-  padding: 8px;
+  padding: 9px;
 }
 
 .taskList__description {
@@ -165,7 +167,7 @@ h2:first-letter {
 }
 
 .input {
-  padding-left: 10px;
+  padding: 4px;
   border: 2px solid #1d4ed8;
   border-right: 0px;
   color: #1f2937;
@@ -178,8 +180,8 @@ h2:first-letter {
   background-color: #2563eb;
   color: #eff6ff;
   border: none;
-  height: 40px;
-  padding: 10px;
+  padding: 15px;
+  padding-bottom: 16px;
   margin-top: 10px;
 }
 
